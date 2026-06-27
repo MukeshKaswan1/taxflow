@@ -102,6 +102,16 @@ const runBotStateMachine = async () => {
   const browserContext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const page = await browserContext.newPage();
 
+  // Navigate to login portal immediately to avoid waiting for unknown state timeouts
+  try {
+    await page.goto('https://eportal.incometax.gov.in/iec/foservices/#/login', {
+      timeout: 60000,
+      waitUntil: 'domcontentloaded'
+    });
+  } catch (err) {
+    console.warn('[Init] Initial page load timed out or failed:', err.message);
+  }
+
   // The context object tracks state across iterations
   const context = {
     pan,
