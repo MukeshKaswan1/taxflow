@@ -94,7 +94,11 @@ const runBotStateMachine = async () => {
 
   await emitEvent(jobId, 'info', 'INIT', `Bot launched for PAN: ${pan.slice(0,3)}***${pan.slice(-2)} (State Machine Mode)`);
 
-  const browser = await chromium.launch({ headless: false });
+  const isHeadless = process.env.HEADLESS === 'true' || process.env.NODE_ENV === 'production' || !process.env.DISPLAY;
+  const browser = await chromium.launch({ 
+    headless: isHeadless,
+    args: isHeadless ? ['--no-sandbox', '--disable-setuid-sandbox'] : [] 
+  });
   const browserContext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const page = await browserContext.newPage();
 
