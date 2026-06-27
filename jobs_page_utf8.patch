@@ -1,0 +1,69 @@
+diff --git a/ui/src/app/jobs/page.jsx b/ui/src/app/jobs/page.jsx
+index fa1bd4f..56e6e06 100644
+--- a/ui/src/app/jobs/page.jsx
++++ b/ui/src/app/jobs/page.jsx
+@@ -13,6 +13,8 @@ export default function JobsPageClient() {
+   const { isAdmin, loading: authLoading } = useAuth();
+   const [jobs, setJobs] = useState([]);
+   const [loading, setLoading] = useState(true);
++  const [currentPage, setCurrentPage] = useState(1);
++  const jobsPerPage = 10;
+ 
+   useEffect(() => {
+     if (authLoading) return;
+@@ -23,9 +25,13 @@ export default function JobsPageClient() {
+   }, [authLoading]);
+ 
+   if (authLoading || loading) {
+-    return <p className="text-gray-400">Loading jobs...</p>;
++    return <p className="text-gray-500">Loading jobs...</p>;
+   }
+ 
++  const totalPages = Math.ceil(jobs.length / jobsPerPage) || 1;
++  const startIndex = (currentPage - 1) * jobsPerPage;
++  const currentJobs = jobs.slice(startIndex, startIndex + jobsPerPage);
++
+   return (
+     <>
+       <PageHeader
+@@ -49,10 +55,36 @@ export default function JobsPageClient() {
+           }
+         />
+       ) : (
+-        <div className="space-y-3">
+-          {jobs.map((job) => (
+-            <JobListItem key={job._id} job={job} />
+-          ))}
++        <div className="space-y-6">
++          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
++            {currentJobs.map((job) => (
++              <JobListItem key={job._id} job={job} />
++            ))}
++          </div>
++
++          {totalPages > 1 && (
++            <div className="flex items-center justify-between border-t border-gray-200 pt-6 mt-6">
++              <p className="text-sm text-gray-600">
++                Showing <span className="font-semibold text-gray-900">{startIndex + 1}</span> to <span className="font-semibold text-gray-900">{Math.min(startIndex + jobsPerPage, jobs.length)}</span> of <span className="font-semibold text-gray-900">{jobs.length}</span> jobs
++              </p>
++              <div className="flex gap-2">
++                <Button
++                  variant="secondary"
++                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
++                  disabled={currentPage === 1}
++                >
++                  Previous
++                </Button>
++                <Button
++                  variant="secondary"
++                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
++                  disabled={currentPage === totalPages}
++                >
++                  Next
++                </Button>
++              </div>
++            </div>
++          )}
+         </div>
+       )}
+     </>

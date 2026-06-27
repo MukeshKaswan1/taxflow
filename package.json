@@ -1,0 +1,23 @@
+{
+  "name": "registerkaro-assessment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:ui": "npm run dev --prefix ui",
+    "dev:service": "npm run dev --prefix service",
+    "start:automation": "npm start --prefix automation",
+    "dev": "concurrently \"npm run dev:service\" \"npm run dev:ui\"",
+    "dev:all": "concurrently \"npm run dev:service\" \"npm run dev:ui\"",
+    "test": "node service/src/__tests__/validation.test.js && node service/src/__tests__/replay.test.js && node automation/src/__tests__/stateMachine.test.js",
+    "install:all": "npm install && npm install --prefix service && npm install --prefix ui && npm install --prefix automation"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "concurrently": "^10.0.3",
+    "mongoose": "^9.7.2"
+  }
+}
