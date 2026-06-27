@@ -17,8 +17,18 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 
 // --- MIDDLEWARE ---
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:3008',
+  'https://taxflow-one.vercel.app'
+];
+if (process.env.CORS_ORIGIN) {
+  allowedOrigins.push(process.env.CORS_ORIGIN);
+}
+
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:3008'],
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Last-Event-ID'],
 };
